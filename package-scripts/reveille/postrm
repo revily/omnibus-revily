@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Perform necessary reveille removal steps
+# after package is uninstalled.
+#
+
+echo "reveille has been uninstalled!"
+
+exit 0
