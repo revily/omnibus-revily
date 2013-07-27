@@ -1,5 +1,6 @@
-# s3_access_key "something"
-# s3_secret_key "something"
-# s3_bucket "some-bucket"
+s3_access_key "something"
+s3_secret_key "something"
+s3_bucket "some-bucket"
 # use_s3_caching true
-# solaris_compiler "gcc"
+use_s3_caching false
+solaris_compiler "gcc"

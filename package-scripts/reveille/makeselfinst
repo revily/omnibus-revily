@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# Install a full reveille
+# Install a full revily
 #
 
 PROGNAME=`basename $0`
 INSTALLER_DIR=`dirname $0`
-DEST_DIR=/opt/reveille
-CONFIG_DIR=/etc/reveille
+DEST_DIR=/opt/revily
+CONFIG_DIR=/etc/revily
 USAGE="usage: $0"
 
 error_exit()
@@ -22,6 +22,6 @@ cp -R $INSTALLER_DIR $DEST_DIR || error_exit "Cannot install to $DEST_DIR"
 rm -f $DEST_DIR/$PROGNAME
 
 # You may want to symlink your packages bin files into /usr/bin
-# ln -sf $DEST_DIR/bin/reveille /usr/bin || error_exit "Cannot link reveille to /usr/bin"
+# ln -sf $DEST_DIR/bin/revily /usr/bin || error_exit "Cannot link revily to /usr/bin"
 
 exit 0

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Perform necessary reveille setup steps
+# Perform necessary revily setup steps
 # after package is installed.
 #
 
@@ -12,6 +12,6 @@ function error_exit
   exit 1
 }
 
-echo "Thank you for installing reveille!"
+echo "Thank you for installing revily!"
 
 exit 0
