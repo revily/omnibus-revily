@@ -22,33 +22,22 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-name "revily-server"
-maintainer "Dan Ryan"
-homepage "revi.ly"
+name "revily-web"
+version "1.0.0"
 
-replaces        "revily-server"
-install_path    "/opt/revily-server"
-build_version   Omnibus::BuildVersion.new.semver
-build_iteration 1
+dependency "ruby"
+dependency "bundler"
+dependency "libxml2"
+dependency "libxslt"
+dependency "curl"
+dependency "rsync"
 
-# creates required build directories
-dependency "preparation"
+source :git => "https://github.com/revily/revily-web"
 
-# revily dependencies/components
-dependency "nginx"
-dependency "runit"
-dependency "unicorn"
+relative_path "revily-web"
 
-# backend
-dependency "postgresql"
-dependency "redis"
-
-# revily itself
-dependency "revily-api"
-dependency "revily-web"
-
-# version manifest file
-dependency "version-manifest"
-
-exclude "\.git*"
-exclude "bundler\/git"
+build do
+  bundle "install --without development test --path=#{install_dir}/embedded/service/gem"
+  command "mkdir -p #{install_dir}/embedded/service/revily-web"
+  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily-web/"
+end

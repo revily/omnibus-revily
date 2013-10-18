@@ -22,8 +22,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-name "revily"
-version "0.0.1"
+name "revily-api"
+version "1.0.0"
 
 dependency "ruby"
 dependency "bundler"
@@ -32,12 +32,12 @@ dependency "libxslt"
 dependency "curl"
 dependency "rsync"
 
-source :git => "https://github.com/reveille/reveille.git"
+source :git => "https://github.com/revily/revily"
 
-relative_path "reveille"
+relative_path "revily-api"
 
 build do
   bundle "install --without development test --path=#{install_dir}/embedded/service/gem"
-  command "mkdir -p #{install_dir}/embedded/service/revily"
-  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily/"
+  command "mkdir -p #{install_dir}/embedded/service/revily-api"
+  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily-api/"
 end
