@@ -23,8 +23,8 @@
 #
 
 name "revily-server"
-maintainer "Dan Ryan"
-homepage "revi.ly"
+maintainer "Applied Awesome LLC."
+homepage "http://revi.ly"
 
 replaces        "revily-server"
 install_path    "/opt/revily-server"
@@ -35,6 +35,9 @@ build_iteration 1
 dependency "preparation"
 
 # revily dependencies/components
+dependency "chef-gem"
+dependency "revily-cookbooks" # used by revily-ctl reconfigure
+dependency "revily-ctl"
 dependency "nginx"
 dependency "runit"
 dependency "unicorn"

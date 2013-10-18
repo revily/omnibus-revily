@@ -36,8 +36,14 @@ source :git => "https://github.com/revily/revily-web"
 
 relative_path "revily-web"
 
+env = {
+  "LANG"     => "en_US.UTF-8",
+  "LANGUAGE" => "en_US.UTF-8",
+  "LC_ALL"   => "en_US.UTF-8"
+}
+
 build do
-  bundle "install --without development test --path=#{install_dir}/embedded/service/gem"
+  bundle "install --without development test --path=#{install_dir}/embedded/service/gem", :env => env
   command "mkdir -p #{install_dir}/embedded/service/revily-web"
   command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily-web/"
 end

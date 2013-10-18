@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd /opt/revily/embedded/service/revily-web
+
+exec 2>&1
+exec chpst -P -U <%= node['revily']['user']['username'] %> -u <%= node['revily']['user']['username'] %> /usr/bin/env HOME="<%= node['revily']['revily-web']['dir'] %>" /opt/revily/embedded/bin/bundle exec unicorn -E <%= node['revily']['revily-web']['environment'] %> -c <%= File.join(node['revily']['revily-web']['dir'], "etc", "unicorn.rb") %> /opt/revily/embedded/service/revily-web/config.ru

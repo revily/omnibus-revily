@@ -27,7 +27,7 @@ dependency "libiconv"
 dependency "gdbm" if (platform == "mac_os_x" or platform == "freebsd" or platform == "aix")
 dependency "libgcc" if (platform == "solaris2" and Omnibus.config.solaris_compiler == "gcc")
 
-source :url => "http://ftp.ruby-lang.org/pub/ruby/2.0/ruby-#{version}.tar.gz",
+source :url => "http://cache.ruby-lang.org/pub/ruby/2.0/ruby-#{version}.tar.gz",
        :md5 => 'c351450a0bed670e0f5ca07da3458a5b'
 
 relative_path "ruby-#{version}"
@@ -68,16 +68,23 @@ env =
       #
       # AIX also uses -Wl,-blibpath instead of -R or LD_RUN_PATH, but the
       # option is not additive, so requires /usr/lib and /lib as well (there
-      # is another compiler option to allow ld to take an -R flag in addition
+      # is a -bsvr4 option to allow ld to take an -R flag in addition
       # to turning on -brtl, but it had other side effects I couldn't fix).
+      #
+      # If libraries linked with gcc -shared have symbol resolution failures
+      # then it may be useful to add -bexpfull to export all symbols.
       #
       # -O2 optimized away some configure test which caused ext libs to fail
       #
       # We also need prezl's M4 instead of picking up /usr/bin/m4 which
       # barfs on ruby.
       #
-      "CFLAGS" => "-I#{install_dir}/embedded/include -O",
-      "LDFLAGS" => "-L#{install_dir}/embedded/lib -Wl,-brtl -Wl,-blibpath:#{install_dir}/embedded/lib:/usr/lib:/lib",
+      "CC" => "gcc -maix64",
+      "LD" => "ld -b64",
+      "CFLAGS" => "-maix64 -I#{install_dir}/embedded/include -O",
+      "LDFLAGS" => "-maix64 -L#{install_dir}/embedded/lib -Wl,-brtl -Wl,-blibpath:#{install_dir}/embedded/lib:/usr/lib:/lib",
+      "OBJECT_MODE" => "64",
+      "ARFLAGS" => "-X64 cru",
       "M4" => "/opt/freeware/bin/m4"
     }
   else
@@ -122,19 +129,6 @@ build do
     configure_command << "--with-opt-dir=#{install_dir}/embedded"
   end
 
-  # this works around a problem that appears to be identical to the ruby bug:
-  #   https://bugs.ruby-lang.org/issues/7217
-  # however as the patch was merged into 1.9.3-p429 it appears that there was a regression or
-  # it was not fixed for very old make's or something...
-  build_jobs = if ( (OHAI['platform_family'] == "rhel" && OHAI['platform_version'].to_f < 6) ||
-                   OHAI['platform'] == "mac_os_x" ||
-                   OHAI['platform'] == "solaris2"
-                  )
-                 1
-               else
-                 max_build_jobs
-               end
-
   # @todo expose bundle_bust() in the DSL
   env.merge!({
     "RUBYOPT"         => nil,
@@ -143,7 +137,18 @@ build do
     "GEM_PATH"        => nil,
     "GEM_HOME"        => nil
   })
+
+  # @todo: move into omnibus-ruby
+  has_gmake = system("gmake --version")
+
+  if has_gmake
+    env.merge!({'MAKE' => 'gmake'})
+    make_binary = 'gmake'
+  else
+    make_binary = 'make'
+  end
+
   command configure_command.join(" "), :env => env
-  command "make -j #{build_jobs}", :env => env
-  command "make install", :env => env
+  command "#{make_binary} -j #{max_build_jobs}", :env => env
+  command "#{make_binary} -j #{max_build_jobs} install", :env => env
 end

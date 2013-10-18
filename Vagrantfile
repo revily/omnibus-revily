@@ -88,13 +88,13 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision :shell, :inline => <<-OMNIBUS_BUILD
-    sudo dpkg-reconfigure locales
-    sudo update-locale LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" LANGUAGE="en_US.UTF-8"
+    # sudo dpkg-reconfigure locales
+    # sudo update-locale LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" LANGUAGE="en_US.UTF-8"
     sudo mkdir -p /opt/#{project_name}
     sudo chown vagrant. /opt/#{project_name}
     export PATH=/usr/local/bin:$PATH
     cd #{guest_project_path}
-    su - vagrant -c "bundle install --binstubs"
-    su - vagrant -c "bin/omnibus build project #{project_name}"
+    su vagrant -c "bundle install --binstubs"
+    su vagrant -c "bin/omnibus build project #{project_name}"
   OMNIBUS_BUILD
 end

@@ -1,0 +1,63 @@
+user <%= node['revily']['user']['username'] %> <%= node['revily']['user']['username']%>;
+worker_processes <%= @worker_processes %>;
+error_log /var/log/revily/nginx/error.log<%= node['revily']['lb']['debug'] ? " debug" : "" %>;
+
+daemon off;
+
+events {
+  worker_connections <%= @worker_connections %>;
+}
+
+http {
+  log_format revily '$remote_addr - $remote_user [$time_local]  '
+                    '"$request" $status "$request_time" $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent" "$upstream_addr" "$upstream_status" "$upstream_response_time" $request_length';
+
+  sendfile <%= @sendfile %>;
+  tcp_nopush <%= @tcp_nopush %>;
+  tcp_nodelay <%= @tcp_nodelay %>;
+
+  keepalive_timeout <%= @keepalive_timeout %>;
+
+  gzip <%= @gzip %>;
+  gzip_http_version <%= @gzip_http_version %>;
+  gzip_comp_level <%= @gzip_comp_level %>;
+  gzip_proxied <%= @gzip_proxied %>;
+  gzip_types <%= @gzip_types.join(' ') %>;
+
+  include /opt/revily/embedded/conf/mime.types;
+
+  <%- node['revily']['lb']['upstream'].each do |uname, servers| -%>
+  upstream <%= uname.gsub(/-/, '_') %> {
+    <%- servers.each do |server| -%>
+    server <%= server %>:<%= node['revily'][uname]['port'] %>;
+    <%- end -%>
+  }
+  <%- end -%>
+
+  # external lb config for Revily API
+  <%- if node['revily']['lb']['enable'] -%>
+  proxy_cache_path  <%= File.join(@dir, "cache") %> levels=1:2 keys_zone=webui-cache:50m max_size=<%= @cache_max_size %> inactive=600m;
+  proxy_temp_path <%= File.join(@dir, "cache-tmp") %>;
+
+  # We support three options: serve nothing on non_ssl_port (80),
+  # redirect to https, or actually serve the API.
+  <%- if @non_ssl_port -%>
+  <%- if @enable_non_ssl -%>
+
+  # Revily HTTP API
+  include <%= @revily_http_config %>;
+  <%- else -%>
+
+  server {
+    listen <%= @non_ssl_port %>;
+    access_log /var/log/revily/nginx/rewrite-port-<%= @non_ssl_port %>.log;
+    return 301 https://$host:<%= @ssl_port %>$request_uri;
+  }
+  <%- end -%>
+  <%-  end -%>
+
+  # Revily HTTPS API
+  include <%= @revily_https_config %>;
+  <%- end -%>
+}
