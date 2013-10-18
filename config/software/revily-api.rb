@@ -27,8 +27,8 @@ version "1.0.0"
 
 dependency "ruby"
 dependency "bundler"
-dependency "libxml2"
-dependency "libxslt"
+# dependency "libxml2"
+# dependency "libxslt"
 dependency "curl"
 dependency "rsync"
 

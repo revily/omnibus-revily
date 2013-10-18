@@ -41,10 +41,10 @@ Vagrant.configure("2") do |config|
   #   c.vm.box_url = "http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box"
   # end
 
-  # config.vm.define 'centos-6' do |c|
-  #   c.vm.box = "opscode-centos-6.4"
-  #   c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box"
-  # end
+  config.vm.define 'centos-6' do |c|
+    c.vm.box = "opscode-centos-6.4"
+    c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box"
+  end
 
   config.vm.provider :virtualbox do |vb|
     # Give enough horsepower to build without taking all day.

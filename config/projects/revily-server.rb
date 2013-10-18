@@ -35,9 +35,6 @@ build_iteration 1
 dependency "preparation"
 
 # revily dependencies/components
-dependency "chef-gem"
-dependency "revily-cookbooks" # used by revily-ctl reconfigure
-dependency "revily-ctl"
 dependency "nginx"
 dependency "runit"
 dependency "unicorn"
