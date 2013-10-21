@@ -15,27 +15,33 @@
 # limitations under the License.
 #
 
-name "revily-web"
-version "1.0.0"
+name "revily"
+maintainer "Applied Awesome LLC."
+homepage "http://revi.ly"
 
-dependency "ruby"
-dependency "bundler"
-dependency "unicorn"
-dependency "curl"
-dependency "rsync"
+replaces        "revily"
+install_path    "/opt/revily"
+build_version   Omnibus::BuildVersion.new.semver
+build_iteration 1
 
-source :git => "https://github.com/revily/revily-web"
+# creates required build directories
+dependency "preparation"
 
-relative_path "revily-web"
+# revily dependencies/components
+# dependency "nginx"
+# dependency "runit"
+# dependency "unicorn"
 
-env = {
-  "LANG"     => "en_US.UTF-8",
-  "LANGUAGE" => "en_US.UTF-8",
-  "LC_ALL"   => "en_US.UTF-8"
-}
+# backend
+# dependency "postgresql"
+# dependency "redis"
 
-build do
-  bundle "install --without development test --path=#{install_dir}/embedded/service/gem", :env => env
-  command "mkdir -p #{install_dir}/embedded/service/revily-web"
-  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily-web/"
-end
+# revily itself
+dependency "revily-api"
+dependency "revily-web"
+
+# version manifest file
+dependency "version-manifest"
+
+exclude "\.git*"
+exclude "bundler\/git"

@@ -9,7 +9,7 @@ end
 
 host_project_path = File.expand_path("..", __FILE__)
 guest_project_path = "/home/vagrant/#{File.basename(host_project_path)}"
-project_name = "revily-server"
+project_name = "revily"
 
 Vagrant.configure("2") do |config|
 
@@ -41,10 +41,10 @@ Vagrant.configure("2") do |config|
   #   c.vm.box_url = "http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box"
   # end
 
-  config.vm.define 'centos-6' do |c|
-    c.vm.box = "opscode-centos-6.4"
-    c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box"
-  end
+  # config.vm.define 'centos-6' do |c|
+  #   c.vm.box = "opscode-centos-6.4"
+  #   c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box"
+  # end
 
   config.vm.provider :virtualbox do |vb|
     # Give enough horsepower to build without taking all day.
@@ -88,8 +88,6 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision :shell, :inline => <<-OMNIBUS_BUILD
-    # sudo dpkg-reconfigure locales
-    # sudo update-locale LANG="en_US.UTF-8" LC_ALL="en_US.UTF-8" LANGUAGE="en_US.UTF-8"
     sudo mkdir -p /opt/#{project_name}
     sudo chown vagrant. /opt/#{project_name}
     export PATH=/usr/local/bin:$PATH

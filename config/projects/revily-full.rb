@@ -15,28 +15,33 @@
 # limitations under the License.
 #
 
-name "revily-api"
-version "1.0.0"
+name "revily-full"
+maintainer "Applied Awesome LLC."
+homepage "http://revi.ly"
 
-dependency "ruby"
-dependency "libpq"
-dependency "bundler"
+replaces        "revily"
+install_path    "/opt/revily"
+build_version   Omnibus::BuildVersion.new.semver
+build_iteration 1
+
+# creates required build directories
+dependency "preparation"
+
+# revily dependencies/components
+dependency "nginx"
+dependency "runit"
 dependency "unicorn"
-dependency "curl"
-dependency "rsync"
 
-source :git => "https://github.com/revily/revily"
+# backend
+dependency "postgresql"
+dependency "redis"
 
-relative_path "revily-api"
+# revily itself
+dependency "revily-api"
+dependency "revily-web"
 
-env = {
-  "LANG"     => "en_US.UTF-8",
-  "LANGUAGE" => "en_US.UTF-8",
-  "LC_ALL"   => "en_US.UTF-8"
-}
+# version manifest file
+dependency "version-manifest"
 
-build do
-  bundle "install --without development test --path=#{install_dir}/embedded/service/gem", :env => env
-  command "mkdir -p #{install_dir}/embedded/service/revily-api"
-  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily-api/"
-end
+exclude "\.git*"
+exclude "bundler\/git"

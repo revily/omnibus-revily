@@ -15,28 +15,21 @@
 # limitations under the License.
 #
 
-name "revily-api"
-version "1.0.0"
+name "libpq"
+maintainer "Applied Awesome LLC."
+homepage "http://revi.ly"
 
-dependency "ruby"
+replaces        "libpq"
+install_path    "/opt/libpq"
+build_version   Omnibus::BuildVersion.new.semver
+build_iteration 1
+
+# creates required build directories
+dependency "preparation"
+
 dependency "libpq"
-dependency "bundler"
-dependency "unicorn"
-dependency "curl"
-dependency "rsync"
+# version manifest file
+dependency "version-manifest"
 
-source :git => "https://github.com/revily/revily"
-
-relative_path "revily-api"
-
-env = {
-  "LANG"     => "en_US.UTF-8",
-  "LANGUAGE" => "en_US.UTF-8",
-  "LC_ALL"   => "en_US.UTF-8"
-}
-
-build do
-  bundle "install --without development test --path=#{install_dir}/embedded/service/gem", :env => env
-  command "mkdir -p #{install_dir}/embedded/service/revily-api"
-  command "#{install_dir}/embedded/bin/rsync -a --delete --exclude=.git/*** --exclude=.gitignore ./ #{install_dir}/embedded/service/revily-api/"
-end
+exclude "\.git*"
+exclude "bundler\/git"
